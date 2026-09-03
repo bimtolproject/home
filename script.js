@@ -90,7 +90,7 @@ async function submitAttendance(event) {
 
   // Nonaktifkan tombol selama proses kirim
   btnSubmit.disabled = true;
-  showStatus('Memverifikasi wajah & mengirim presensi ke Telegram...', 'loading');
+  showStatus('Memverifikasi wajah & mengirim presensi ke Database...', 'loading');
 
   // Ambil snapshot gambar dari video ke canvas
   canvas.width = video.videoWidth || 640;
