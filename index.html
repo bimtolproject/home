@@ -16,12 +16,11 @@
   <div class="absensi-container">
     <!-- Header -->
     <header class="absensi-header">
-      <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali ke Hub</a>
       <div class="header-title">
         <i class="fa-solid fa-camera-viewfinder text-rose"></i>
         <h2>Presensi Digital Wajah</h2>
       </div>
-      <p class="header-desc">Verifikasi kehadiran presisi tinggi terintegrasi Telegram Cloud Service.</p>
+      <p class="header-desc">Verifikasi kehadiran</p>
     </header>
 
     <!-- Main Card -->
@@ -48,15 +47,15 @@
       <!-- User Form -->
       <form id="attendanceForm" class="attendance-form" onsubmit="submitAttendance(event)">
         <div class="form-group">
-          <label for="userName"><i class="fa-solid fa-user"></i> Nama Lengkap / NISN</label>
-          <input type="text" id="userName" placeholder="Masukkan nama atau identitas..." required autocomplete="off">
+          <label for="userName"><i class="fa-solid fa-user"></i> Nama Lengkap dan Kelas</label>
+          <input type="text" id="userName" placeholder="cth: Xelia Fux (X TSM 1)" required autocomplete="off">
         </div>
 
         <div class="form-group">
           <label for="userActivity"><i class="fa-solid fa-clock"></i> Status Kehadiran</label>
           <select id="userActivity" required>
-            <option value="Hadir Tepat Waktu">Hadir Tepat Waktu</option>
-            <option value="Hadir Bertugas / Piket">Hadir Bertugas / Piket</option>
+            <option value="Hadir Tepat Waktu">Hadir</option>
+            <option value="Hadir Bertugas / Piket">Terlambat</option>
             <option value="Izin / Dispensasi">Izin / Dispensasi</option>
           </select>
         </div>
