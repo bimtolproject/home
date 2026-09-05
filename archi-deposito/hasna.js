@@ -1,5 +1,5 @@
 const hasnaData = {
-    "version": 1.02,
+    "version": 1.03,
     "user": {
         "name": "Arch",
         "accountType": "Black Diamond Tier",
@@ -8,7 +8,7 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 1001,
+        "balance": 0,
         "currency": "IDR"
     },
     "riwayat": [
