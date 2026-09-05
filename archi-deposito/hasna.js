@@ -1,5 +1,5 @@
 const hasnaData = {
-    "version": 1.01,
+    "version": 1.02,
     "user": {
         "name": "Arch",
         "accountType": "Black Diamond Tier",
@@ -8,10 +8,19 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 1,
+        "balance": 1001,
         "currency": "IDR"
     },
     "riwayat": [
+        {
+            "id": "t_mto4ehk7",
+            "title": "Deposito via QRIS",
+            "pocket": "Rekening Utama",
+            "type": "in",
+            "amount": 1000,
+            "date": "05 Sep 2026 - 15:28",
+            "icon": "fa-plus"
+        },
         {
             "id": "t71",
             "title": "Biaya Transfer + Admin",
