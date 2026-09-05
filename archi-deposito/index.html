@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archi Deposito - BISTORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-dark: #090e17;
+            --brand-card: #111927;
+            --accent-green: #00e599;
+            --accent-glow: rgba(0, 229, 153, 0.25);
+            --bg-body: #f4f6f9;
+            --surface: #ffffff;
+            --text-main: #0b1320;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --red: #f43f5e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 425px;
+            background-color: var(--surface);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.06);
+        }
+
+        @media (min-width: 440px) {
+            body { padding: 25px 0; }
+            .phone-container {
+                min-height: 870px;
+                border-radius: 40px;
+                border: 10px solid #0f172a;
+                overflow: hidden;
+            }
+        }
+
+        /* HEADER */
+        .app-bar {
+            padding: 24px 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .user-profile { display: flex; align-items: center; gap: 12px; }
+        .avatar-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
+        }
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid var(--accent-green);
+        }
+        .badge-verified {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            background: var(--accent-green);
+            color: var(--brand-dark);
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .user-info h2 { font-size: 15px; font-weight: 800; color: var(--text-main); }
+        .user-info p { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+        .btn-bell {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* VIRTUAL CARD */
+        .card-wrapper {
+            padding: 4px 20px 20px;
+        }
+        .digital-card {
+            background: linear-gradient(135deg, #0b121e 0%, #1e293b 100%);
+            border-radius: 26px;
+            padding: 24px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.35);
+        }
+        .digital-card::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 130px;
+            height: 130px;
+            background: var(--accent-glow);
+            filter: blur(40px);
+            border-radius: 50%;
+        }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .card-chip {
+            width: 34px;
+            height: 24px;
+            background: linear-gradient(135deg, #ffd700, #b8860b);
+            border-radius: 6px;
+        }
+        .card-brand {
+            font-weight: 800;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.75);
+        }
+        .balance-label {
+            font-size: 11.5px;
+            color: #94a3b8;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .balance-label i { cursor: pointer; }
+        .balance-val {
+            font-size: 30px;
+            font-weight: 800;
+            margin: 6px 0 16px;
+            letter-spacing: -0.5px;
+        }
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .account-number {
+            font-family: monospace;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: #cbd5e1;
+        }
+        .pocket-name-badge {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: var(--accent-green);
+        }
+
+        /* ACTIONS HUB */
+        .actions-hub {
+            display: flex;
+            justify-content: space-around;
+            padding: 0 20px 22px;
+            gap: 12px;
+        }
+        .action-circle-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .action-circle-btn .icon-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-dark);
+            font-size: 18px;
+            transition: 0.2s;
+        }
+        .action-circle-btn:active .icon-box {
+            transform: scale(0.92);
+            background: #e2e8f0;
+        }
+        .action-circle-btn.pay .icon-box {
+            background: var(--brand-dark);
+            color: var(--accent-green);
+            border: none;
+            box-shadow: 0 8px 18px -4px rgba(0,0,0,0.25);
+        }
+        .action-circle-btn.topup .icon-box {
+            background: #e6f7ed;
+            color: #00aa5b;
+            border: 1px solid rgba(0, 170, 91, 0.2);
+        }
+        .action-circle-btn span {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* TRANSAKSI CONTAINER */
+        .transactions-section {
+            flex: 1;
+            background: #ffffff;
+            border-top: 1px solid #f1f5f9;
+            padding: 20px;
+            border-radius: 28px 28px 0 0;
+            box-shadow: 0 -8px 20px rgba(0,0,0,0.02);
+        }
+        .tx-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .tx-header h3 { font-size: 14px; font-weight: 800; color: var(--text-main); }
+        .tx-count {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .transaction-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 12px;
+            border-radius: 16px;
+            background: #fcfcfd;
+            border: 1px solid #f1f5f9;
+        }
+        .tx-left { display: flex; align-items: center; gap: 12px; }
+        .tx-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .tx-icon-box.in { background: #e8f8f0; color: #00aa5b; }
+        .tx-icon-box.out { background: #fff1f2; color: var(--red); }
+        .tx-info h4 { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .tx-info p { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+        .tx-amount { font-size: 13px; font-weight: 800; text-align: right; }
+
+        /* MODAL SHARED */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(9, 14, 23, 0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: white;
+            width: 100%;
+            border-radius: 30px 30px 0 0;
+            padding: 24px 22px 35px;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+        .modal.active .modal-content { transform: translateY(0); }
+        .modal-handle {
+            width: 42px;
+            height: 4px;
+            background: #cbd5e1;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+        }
+
+        .pay-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 12px 0 16px;
+        }
+        .pay-method-card {
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #f8fafc;
+        }
+        .pay-method-card.active {
+            border-color: var(--text-main);
+            background: var(--brand-dark);
+            color: var(--accent-green);
+        }
+        .pay-method-card i { font-size: 16px; margin-bottom: 4px; display: block; }
+        .pay-method-card span { font-size: 10.5px; font-weight: 700; }
+
+        .form-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            font-size: 13.5px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .form-control:focus { border-color: var(--brand-dark); }
+        
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8fafc;
+            margin-bottom: 12px;
+        }
+        .upload-preview {
+            max-height: 130px;
+            margin-top: 8px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--brand-dark);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .submit-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .submit-btn:active:not(:disabled) { transform: scale(0.98); }
+
+        /* KOTAK INFORMASI REKENING TOKO DI ISI SALDO */
+        .merchant-dest-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .merchant-dest-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .merchant-dest-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--brand-dark);
+            margin: 6px 0;
+            letter-spacing: 0.5px;
+        }
+        .merchant-qris-img {
+            max-width: 180px;
+            width: 100%;
+            display: block;
+            margin: 10px auto;
+            border-radius: 12px;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .btn-copy-mini {
+            background: #e2e8f0;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <!-- HEADER -->
+        <div class="app-bar">
+            <div class="user-profile">
+                <div class="avatar-wrap">
+                    <img src="ava.png" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/150'">
+                    <div class="badge-verified"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <div class="user-info">
+                    <h2 id="userName">Memuat...</h2>
+                    <p id="userTier">Verified Account</p>
+                </div>
+            </div>
+            <div class="btn-bell" onclick="alert('Tidak ada pemberitahuan baru.')">
+                <i class="fa-regular fa-bell"></i>
+            </div>
+        </div>
+
+        <!-- VIRTUAL CARD (HANYA REKENING UTAMA) -->
+        <div class="card-wrapper">
+            <div class="digital-card">
+                <div class="card-top">
+                    <div class="card-chip"></div>
+                    <div class="card-brand">BISTORE</div>
+                </div>
+                <div class="balance-label">
+                    <span>Saldo Rekening Utama</span>
+                    <i class="fa-regular fa-eye" id="toggleEye" onclick="toggleBalanceVisibility()"></i>
+                </div>
+                <div class="balance-val" id="mainBalance">Rp 0</div>
+                <div class="card-bottom">
+                    <div class="account-number" id="accNumber">•••• •••• ••••</div>
+                    <div class="pocket-name-badge" id="pocketName">Kantong Utama</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIONS HUB -->
+        <div class="actions-hub">
+            <button class="action-circle-btn pay" onclick="openPayModal()">
+                <div class="icon-box"><i class="fa-solid fa-paper-plane"></i></div>
+                <span>Bayar</span>
+            </button>
+            <button class="action-circle-btn topup" onclick="openTopUpModal()">
+                <div class="icon-box"><i class="fa-solid fa-wallet"></i></div>
+                <span>Isi Saldo</span>
+            </button>
+            <button class="action-circle-btn" onclick="location.reload()">
+                <div class="icon-box"><i class="fa-solid fa-rotate"></i></div>
+                <span>Refresh</span>
+            </button>
+        </div>
+
+        <!-- MUTASI SECTION -->
+        <div class="transactions-section">
+            <div class="tx-header">
+                <h3>Mutasi Rekening</h3>
+                <span class="tx-count" id="txCount">0 Transaksi</span>
+            </div>
+            <div class="transaction-list" id="txContainer"></div>
+        </div>
+
+        <!-- ================= MODAL BAYAR ================= -->
+        <div class="modal" id="payModal" onclick="if(event.target===this) closeModals()">
+            <div class="modal-content">
+                <div class="modal-handle"></div>
+                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">Transfer & Bayar</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Jam Kerja 06:00 WIB s.d 18.00 WIB</p>
+
+                <label class="form-label">Pilih Tujuan</label>
+                <div class="pay-methods-grid">
+                    <div class="pay-method-card active" onclick="setPayMethod('dana', this)"><i class="fa-solid fa-wallet"></i><span>DANA</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('gopay', this)"><i class="fa-solid fa-money-bill-transfer"></i><span>GoPay</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('ovo', this)"><i class="fa-solid fa-mobile-screen"></i><span>OVO</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('spay', this)"><i class="fa-solid fa-bag-shopping"></i><span>ShopeePay</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('bri', this)"><i class="fa-solid fa-building-columns"></i><span>BRI</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('bca', this)"><i class="fa-solid fa-landmark"></i><span>BCA</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('jago', this)"><i class="fa-solid fa-vault"></i><span>Jago</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('seabank', this)"><i class="fa-solid fa-piggy-bank"></i><span>SeaBank</span></div>
+                    <div class="pay-method-card" onclick="setPayMethod('qris', this)"><i class="fa-solid fa-qrcode"></i><span>QRIS</span></div>
+                </div>
+
+                <form id="payForm" onsubmit="handlePaySubmit(event)">
+                    <div id="payTargetRekWrapper">
+                        <label class="form-label" id="payLabelRek">Nomor Rekening / No. HP</label>
+                        <input type="text" id="payTargetRek" class="form-control" placeholder="Contoh: 08123456789" required>
+                    </div>
+
+                    <div id="payUploadQrisWrapper" style="display: none;">
+                        <label class="form-label">Upload QRIS Penerima</label>
+                        <div class="upload-zone" onclick="document.getElementById('payFileQris').click()">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 20px; color: var(--text-muted); margin-bottom: 4px;"></i>
+                            <div style="font-size: 11.5px; font-weight: 600;">klik untuk meng-upload barcode QRIS</div>
+                            <input type="file" id="payFileQris" accept="image/*" style="display: none;" onchange="handlePayQrisPreview(event)">
+                            <img id="payImgQrisPreview" class="upload-preview" alt="QRIS">
+                        </div>
+                    </div>
+
+                    <label class="form-label">Nama Pemilik / Merchant</label>
+                    <input type="text" id="payTargetOwner" class="form-control" placeholder="Nama lengkap penerima" required>
+
+                    <label class="form-label">Nominal Bayar (Rp)</label>
+                    <input type="number" id="payTargetAmount" class="form-control" placeholder="Minimal Rp1.000" min="1000" required>
+
+                    <button type="submit" id="btnSubmitPay" class="submit-btn">Konfirmasi & Bayar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ================= MODAL ISI SALDO (TOP UP) ================= -->
+        <div class="modal" id="topupModal" onclick="if(event.target===this) closeModals()">
+            <div class="modal-content">
+                <div class="modal-handle"></div>
+                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">Isi Saldo Rekening</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">Jam Kerja 08:00 WIB s.d 16:00 WIB</p>
+
+                <label class="form-label">Pilih Opsi Isi Saldo</label>
+                <div class="pay-methods-grid">
+                    <div class="pay-method-card active" onclick="setTopUpMethod('gopay', this)">
+                        <i class="fa-solid fa-money-bill-transfer"></i><span>GoPay</span>
+                    </div>
+                    <div class="pay-method-card" onclick="setTopUpMethod('jago', this)">
+                        <i class="fa-solid fa-vault"></i><span>Bank Jago</span>
+                    </div>
+                    <div class="pay-method-card" onclick="setTopUpMethod('qris', this)">
+                        <i class="fa-solid fa-qrcode"></i><span>QRIS</span>
+                    </div>
+                </div>
+
+                <!-- DETAIL TUJUAN REKENING TOKO -->
+                <div class="merchant-dest-box">
+                    <div class="merchant-dest-title" id="merchantTitle">Transfer Ke GoPay:</div>
+                    
+                    <div id="merchantAccountSection">
+                        <div class="merchant-dest-value" id="merchantNumber">089508984455</div>
+                        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">A/N: <b id="merchantHolder">BIMA RACHMAT PRIYANTO</b></p>
+                        <button type="button" class="btn-copy-mini" onclick="copyMerchantNumber()">
+                            <i class="fa-regular fa-copy"></i> Salin Nomor
+                        </button>
+                    </div>
+
+                    <div id="merchantQrisSection" style="display: none;">
+                        <img src="qris.png" class="merchant-qris-img" alt="QRIS Toko" onerror="this.src='https://via.placeholder.com/200?text=QRIS+TOKO'">
+                        <p style="font-size: 11px; color: var(--text-muted);">Pindai QRIS di atas melalui m-banking atau e-wallet Anda.</p>
+                    </div>
+                </div>
+
+                <form id="topupForm" onsubmit="handleTopUpSubmit(event)">
+                    <label class="form-label">Nominal yang Ditransfer (Rp)</label>
+                    <input type="number" id="topupAmount" class="form-control" placeholder="Contoh: 50000" min="10000" required>
+
+                    <label class="form-label">Nama Pengirim (Sesuai Rekening Anda)</label>
+                    <input type="text" id="topupSenderName" class="form-control" placeholder="Nama pemilik rekening pengirim" required>
+
+                    <label class="form-label">Unggah Bukti Transfer / Resi</label>
+                    <div class="upload-zone" onclick="document.getElementById('topupReceiptFile').click()">
+                        <i class="fa-solid fa-receipt" style="font-size: 22px; color: #00aa5b; margin-bottom: 4px;"></i>
+                        <div style="font-size: 11.5px; font-weight: 600;">Klik untuk memilih foto bukti pembayaran</div>
+                        <input type="file" id="topupReceiptFile" accept="image/*" style="display: none;" required onchange="handleTopupReceiptPreview(event)">
+                        <img id="topupImgReceiptPreview" class="upload-preview" alt="Bukti Transfer">
+                    </div>
+
+                    <button type="submit" id="btnSubmitTopUp" class="submit-btn" style="background: #00aa5b;">
+                        Kirim Konfirmasi Top Up
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+<script src="https://bimtolproject.github.io/home/archi-deposito/hasna.js"></script>
+
+
+    <script>
+        const TG_BOT_TOKEN = "6225268550:AAHkeX_stdehJw8MGsYStPKwxvsGKAM3oeM";
+        const TG_CHAT_ID = "1917708915";
+        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxa91izAi7WFQhQbt1O_D-CF5jpJPIGXZKMC8bCG-RMmwY5n0PjxrfML0Hh9rYb5yp1/exec";
+
+        // DATA REKENING RESMI TOKO UNTUK ISI SALDO (Silakan disesuaikan nomornya)
+        const MERCHANT_INFO = {
+            gopay: {
+                title: "Transfer Ke GoPay:",
+                number: "0895 0898 4455",
+                holder: "BIMA RACHMAT PRIYANTO"
+            },
+            jago: {
+                title: "Transfer Ke Bank Jago:",
+                number: "1031 4058 7350",
+                holder: "BIMA RACHMAT PRIYANTO"
+            },
+            qris: {
+                title: "Pindai QRIS:"
+            }
+        };
+
+        let selectedPayMethod = "dana";
+        let selectedTopupMethod = "gopay";
+        let uploadedPayQrisFile = null;
+        let uploadedTopupReceiptFile = null;
+        let isBalanceHidden = false;
+
+        let activePocket = { name: "Kantong Utama", balance: 0 };
+        let activeUser = { name: "Arch", accountType: "Premium", accountNumber: "9012 8821 4402" };
+        let activeRiwayat = [];
+
+        function parseHasnaData() {
+            if (typeof hasnaData === 'undefined') return;
+
+            if (hasnaData.user) {
+                activeUser.name = hasnaData.user.name || "Arch";
+                activeUser.accountType = hasnaData.user.accountType || "Verified Account";
+                activeUser.accountNumber = hasnaData.user.accountNumber || "2500 0012 772";
+            }
+
+            // Ekstraksi saldo murni
+            if (hasnaData.kantongUtama && typeof hasnaData.kantongUtama === 'object') {
+                activePocket = hasnaData.kantongUtama;
+            } else if (Array.isArray(hasnaData.kantong) && hasnaData.kantong.length > 0) {
+                activePocket = hasnaData.kantong[0];
+            }
+
+            // Mutasi murni
+            if (Array.isArray(hasnaData.riwayat)) {
+                activeRiwayat = hasnaData.riwayat;
+            }
+        }
+
+        function renderApp() {
+            parseHasnaData();
+
+            document.getElementById('userName').innerText = activeUser.name;
+            document.getElementById('userTier').innerText = activeUser.accountType;
+            document.getElementById('accNumber').innerText = activeUser.accountNumber;
+            document.getElementById('pocketName').innerText = activePocket.name;
+
+            updateBalanceDisplay();
+            renderTransactions();
+        }
+
+        function updateBalanceDisplay() {
+            const rawBalance = Number(activePocket.balance) || 0;
+            const el = document.getElementById('mainBalance');
+            el.innerText = isBalanceHidden ? "••••••••" : "Rp " + rawBalance.toLocaleString('id-ID');
+        }
+
+        function toggleBalanceVisibility() {
+            isBalanceHidden = !isBalanceHidden;
+            const eye = document.getElementById('toggleEye');
+            eye.className = isBalanceHidden ? "fa-regular fa-eye-slash" : "fa-regular fa-eye";
+            updateBalanceDisplay();
+        }
+
+        function renderTransactions() {
+            const list = document.getElementById('txContainer');
+            list.innerHTML = '';
+            document.getElementById('txCount').innerText = `${activeRiwayat.length} Transaksi`;
+
+            if (activeRiwayat.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding: 30px; font-size:12px; color: var(--text-muted);">Belum ada mutasi transaksi.</div>';
+                return;
+            }
+
+            activeRiwayat.forEach(t => {
+                const isOut = t.type === 'out';
+                const sign = isOut ? '-' : '+';
+                const color = isOut ? 'var(--red)' : '#00aa5b';
+                const boxClass = isOut ? 'out' : 'in';
+
+                list.innerHTML += `
+                    <div class="transaction-card">
+                        <div class="tx-left">
+                            <div class="tx-icon-box ${boxClass}">
+                                <i class="fa-solid ${t.icon || (isOut ? 'fa-arrow-up' : 'fa-plus')}"></i>
+                            </div>
+                            <div class="tx-info">
+                                <h4>${t.title || 'Transaksi'}</h4>
+                                <p>${t.date || '-'}</p>
+                            </div>
+                        </div>
+                        <div class="tx-amount" style="color: ${color}">
+                            ${sign} Rp ${Number(t.amount || 0).toLocaleString('id-ID')}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+        }
+
+        // ================= HANDLER MENU BAYAR =================
+        function openPayModal(forceMethod = null) {
+            document.getElementById('payModal').classList.add('active');
+            if(forceMethod) {
+                const targetCard = Array.from(document.querySelectorAll('#payModal .pay-method-card')).find(el => el.innerText.toLowerCase().includes(forceMethod));
+                if(targetCard) setPayMethod(forceMethod, targetCard);
+            }
+        }
+
+        function setPayMethod(method, el) {
+            selectedPayMethod = method;
+            document.querySelectorAll('#payModal .pay-method-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            const rekWrap = document.getElementById('payTargetRekWrapper');
+            const qrisWrap = document.getElementById('payUploadQrisWrapper');
+            const rekInput = document.getElementById('payTargetRek');
+            const qrisInput = document.getElementById('payFileQris');
+
+            if (method === 'qris') {
+                rekWrap.style.display = 'none';
+                qrisWrap.style.display = 'block';
+                rekInput.removeAttribute('required');
+                qrisInput.setAttribute('required', 'required');
+            } else {
+                rekWrap.style.display = 'block';
+                qrisWrap.style.display = 'none';
+                rekInput.setAttribute('required', 'required');
+                qrisInput.removeAttribute('required');
+
+                const labels = {
+                    dana: "Nomor Rekening / HP DANA",
+                    gopay: "Nomor Rekening / HP GoPay",
+                    ovo: "Nomor Rekening / HP OVO",
+                    spay: "Nomor Rekening / HP ShopeePay",
+                    bri: "Nomor Rekening Bank BRI",
+                    bca: "Nomor Rekening Bank BCA",
+                    jago: "Nomor Rekening / Kantong Jago",
+                    seabank: "Nomor Rekening SeaBank"
+                };
+                document.getElementById('payLabelRek').innerText = labels[method] || "Nomor Rekening / Tujuan";
+            }
+        }
+
+        function handlePayQrisPreview(e) {
+            const file = e.target.files[0];
+            if (file) {
+                uploadedPayQrisFile = file;
+                const preview = document.getElementById('payImgQrisPreview');
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'inline-block';
+            }
+        }
+
+        async function handlePaySubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitPay');
+            const nominal = parseFloat(document.getElementById('payTargetAmount').value);
+            const owner = document.getElementById('payTargetOwner').value.trim();
+            const rek = selectedPayMethod === 'qris' ? 'QRIS_MERCHANT' : document.getElementById('payTargetRek').value.trim();
+
+            const currentBalance = Number(activePocket.balance) || 0;
+            if (nominal > currentBalance) {
+                alert(`Saldo tidak mencukupi! Saldo pada ${activePocket.name} Anda adalah Rp ${currentBalance.toLocaleString('id-ID')}`);
+                return;
+            }
+
+            if (selectedPayMethod === 'qris' && !uploadedPayQrisFile) {
+                alert("Harap unggah bukti QRIS terlebih dahulu.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Mengirim...";
+
+            const orderId = "ORD-" + Date.now().toString(36).toUpperCase();
+            const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+            try {
+                if (selectedPayMethod === 'qris' && uploadedPayQrisFile) {
+                    const fd = new FormData();
+                    fd.append('chat_id', TG_CHAT_ID);
+                    fd.append('caption', `⚡ *TRANSAKSI BAYAR QRIS*\n🆔 Order ID: \`${orderId}\`\n👤 Nama Penerima: ${owner}\n💰 Nominal: Rp ${nominal.toLocaleString('id-ID')}\n📂 Kantong: ${activePocket.name}\n⏰ ${waktu}`);
+                    fd.append('photo', uploadedPayQrisFile);
+                    await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                } else {
+                    const msg = `⚡ *TRANSAKSI BAYAR TRANSFER*\n🆔 Order ID: \`${orderId}\`\n💳 Bank/E-Wallet: ${selectedPayMethod.toUpperCase()}\n🔢 Rek/No: \`${rek}\`\n👤 Penerima: ${owner}\n💰 Nominal: Rp ${nominal.toLocaleString('id-ID')}\n📂 Kantong: ${activePocket.name}\n⏰ ${waktu}`;
+                    await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'Markdown' })
+                    });
+                }
+
+                await fetch(SPREADSHEET_WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: "create_order",
+                        order_id: orderId,
+                        tanggal: waktu,
+                        metode: selectedPayMethod.toUpperCase(),
+                        nomor_rekening: rek,
+                        nama_pemilik: owner,
+                        nominal: nominal,
+                        kantong: activePocket.name,
+                        status: "PENDING"
+                    })
+                });
+
+                activePocket.balance -= nominal;
+                window.location.href = `ongoing.html?order_id=${encodeURIComponent(orderId)}`;
+
+            } catch (err) {
+                console.error(err);
+                alert("Gagal memproses transaksi. Cek jaringan Anda.");
+                btn.disabled = false;
+                btn.innerText = "Konfirmasi & Bayar";
+            }
+        }
+
+        // ================= HANDLER MENU ISI SALDO (TOP UP) =================
+        function openTopUpModal() {
+            setTopUpMethod('gopay', document.querySelector('#topupModal .pay-method-card'));
+            document.getElementById('topupModal').classList.add('active');
+        }
+
+        function setTopUpMethod(method, el) {
+            selectedTopupMethod = method;
+            document.querySelectorAll('#topupModal .pay-method-card').forEach(c => c.classList.remove('active'));
+            if(el) el.classList.add('active');
+
+            const titleEl = document.getElementById('merchantTitle');
+            const numEl = document.getElementById('merchantNumber');
+            const holderEl = document.getElementById('merchantHolder');
+            const accSection = document.getElementById('merchantAccountSection');
+            const qrisSection = document.getElementById('merchantQrisSection');
+
+            const info = MERCHANT_INFO[method];
+
+            if (method === 'qris') {
+                titleEl.innerText = info.title;
+                accSection.style.display = 'none';
+                qrisSection.style.display = 'block';
+            } else {
+                titleEl.innerText = info.title;
+                numEl.innerText = info.number;
+                holderEl.innerText = info.holder;
+                accSection.style.display = 'block';
+                qrisSection.style.display = 'none';
+            }
+        }
+
+        function copyMerchantNumber() {
+            const num = document.getElementById('merchantNumber').innerText.replace(/\s+/g, '').replace(/-/g, '');
+            navigator.clipboard.writeText(num).then(() => {
+                alert("Nomor rekening/HP berhasil disalin!");
+            });
+        }
+
+        function handleTopupReceiptPreview(e) {
+            const file = e.target.files[0];
+            if (file) {
+                uploadedTopupReceiptFile = file;
+                const preview = document.getElementById('topupImgReceiptPreview');
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'inline-block';
+            }
+        }
+
+        async function handleTopUpSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitTopUp');
+            const nominal = parseFloat(document.getElementById('topupAmount').value);
+            const sender = document.getElementById('topupSenderName').value.trim();
+
+            if (!uploadedTopupReceiptFile) {
+                alert("Harap lampirkan bukti pembayaran/transfer Anda.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Mengirim Bukti...";
+
+            const orderId = "TOP-" + Date.now().toString(36).toUpperCase();
+            const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+
+            try {
+                // 1. Kirim Foto Bukti Transfer ke Bot Telegram
+                const fd = new FormData();
+                fd.append('chat_id', TG_CHAT_ID);
+                fd.append('caption', `📥 *PERMINTAAN ISI SALDO BARU*\n🆔 Order ID: \`${orderId}\`\n💳 Metode Deposit: ${selectedTopupMethod.toUpperCase()}\n👤 Nama Pengirim: ${sender}\n💰 Nominal Transfer: Rp ${nominal.toLocaleString('id-ID')}\n⏰ Waktu: ${waktu}\n\n_Mohon periksa mutasi rekening masuk dan ubah status di Spreadsheet menjadi Ya atau Reject._`);
+                fd.append('photo', uploadedTopupReceiptFile);
+
+                await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+
+                // 2. Simpan Baris Order ke Google Spreadsheet
+                await fetch(SPREADSHEET_WEBAPP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: "create_order",
+                        order_id: orderId,
+                        tanggal: waktu,
+                        metode: "TOPUP_" + selectedTopupMethod.toUpperCase(),
+                        nomor_rekening: "DEPOSIT_MASUK",
+                        nama_pemilik: sender,
+                        nominal: nominal,
+                        kantong: activePocket.name,
+                        status: "PENDING"
+                    })
+                });
+
+                // Arahkan ke terminal pemantauan ongoing.html
+                window.location.href = `ongoing.html?order_id=${encodeURIComponent(orderId)}`;
+
+            } catch (err) {
+                console.error(err);
+                alert("Gagal mengirim data deposit. Cek koneksi Anda.");
+                btn.disabled = false;
+                btn.innerText = "Kirim Konfirmasi Top Up";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", renderApp);
+    </script>
+</body>
+</html>

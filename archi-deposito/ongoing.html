@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memproses Transaksi - BISTORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-canvas: #f1f5f9;
+            --surface: #ffffff;
+            --brand-dark: #09121f;
+            --brand-primary: #00aa5b;
+            --amber: #f59e0b;
+            --slate-400: #94a3b8;
+            --slate-600: #475569;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 14px;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 412px;
+            background: var(--surface);
+            border-radius: 36px;
+            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .header-bar {
+            padding: 24px 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badge-live {
+            background: #fef3c7;
+            color: #b45309;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-live::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            background: #d97706;
+            border-radius: 50%;
+            animation: ping 1.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes ping {
+            75%, 100% { transform: scale(2); opacity: 0; }
+        }
+
+        .status-hero {
+            padding: 10px 24px 24px;
+            text-align: center;
+        }
+
+        .radar-box {
+            width: 86px;
+            height: 86px;
+            margin: 0 auto 18px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .radar-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(245, 158, 11, 0.35);
+            animation: ringWave 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        .radar-center {
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d97706;
+            font-size: 24px;
+            z-index: 2;
+        }
+
+        @keyframes ringWave {
+            0% { transform: scale(0.7); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        .status-hero h2 {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--brand-dark);
+            margin-bottom: 6px;
+        }
+
+        .status-hero p {
+            font-size: 12px;
+            color: var(--slate-600);
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        /* Struk Tiket */
+        .receipt-container {
+            padding: 0 20px 20px;
+        }
+
+        .receipt-card {
+            background: #f8fafc;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            padding: 20px 18px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+        }
+
+        .receipt-header span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--slate-400);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .receipt-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--brand-dark);
+            margin-top: 4px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 12.5px;
+        }
+
+        .detail-item .label {
+            color: var(--slate-600);
+            font-weight: 500;
+        }
+
+        .detail-item .value {
+            color: var(--brand-dark);
+            font-weight: 700;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        /* Action Buttons */
+        .actions-footer {
+            padding: 0 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s ease, background-color 0.2s;
+            border: none;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        .btn-refresh {
+            background: var(--brand-dark);
+            color: white;
+        }
+
+        .btn-home {
+            background: #f1f5f9;
+            color: var(--slate-600);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="header-bar">
+            <span style="font-size: 13px; font-weight: 700; color: var(--brand-dark); letter-spacing: -0.2px;">BISTORE</span>
+            <div class="badge-live">Menunggu Konfirmasi</div>
+        </div>
+
+        <div class="status-hero">
+            <div class="radar-box">
+                <div class="radar-ring"></div>
+                <div class="radar-center">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+            </div>
+            <h2>Pembayaran Diteruskan</h2>
+            <p>Sistem sedang memverifikasi saldo dan tujuan rekening. Jangan khawatir, mutasi tersimpan rapi di database kami.</p>
+        </div>
+
+        <div class="receipt-container">
+            <div class="receipt-card">
+                <div class="receipt-header">
+                    <span>Nominal Bayar</span>
+                    <h1 id="dispAmount">Rp 0</h1>
+                </div>
+
+                <div class="detail-item">
+                    <span class="label">ID Pesanan</span>
+                    <span class="value" id="dispOrderId" style="font-family: monospace; font-size: 11.5px;">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Metode Pembayaran</span>
+                    <span class="value" id="dispMethod">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Nama Penerima</span>
+                    <span class="value" id="dispOwner">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">No. Rekening / Tujuan</span>
+                    <span class="value" id="dispRek">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Waktu Transaksi</span>
+                    <span class="value" id="dispDate">-</span>
+                </div>
+                <div class="detail-item" style="border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 10px;">
+                    <span class="label">Status Server</span>
+                    <span class="value" id="dispStatus" style="color: var(--amber); text-transform: uppercase;">MEMERIKSA...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-footer">
+            <button class="btn-action btn-refresh" onclick="syncNow()">
+                <i class="fa-solid fa-arrows-rotate" id="syncIcon"></i> Perbarui Status
+            </button>
+            <button class="btn-action btn-home" onclick="window.location.href='index.html'">
+                Kembali ke Beranda
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // MASUKKAN URL GOOGLE APPS SCRIPT ANDA
+        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxa91izAi7WFQhQbt1O_D-CF5jpJPIGXZKMC8bCG-RMmwY5n0PjxrfML0Hh9rYb5yp1/exec";
+
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('order_id');
+
+        if (!orderId) {
+            window.location.href = 'index.html';
+        }
+
+        document.getElementById('dispOrderId').innerText = orderId;
+
+        async function verifyStatus() {
+            try {
+                const res = await fetch(`${SPREADSHEET_WEBAPP_URL}?order_id=${encodeURIComponent(orderId)}`);
+                const data = await res.json();
+
+                if (data.status === "found") {
+                    document.getElementById('dispAmount').innerText = "Rp " + Number(data.nominal || 0).toLocaleString('id-ID');
+                    document.getElementById('dispMethod').innerText = data.metode || "-";
+                    document.getElementById('dispOwner').innerText = data.nama_pemilik || "-";
+                    document.getElementById('dispRek').innerText = data.nomor_rekening || "-";
+                    document.getElementById('dispDate').innerText = data.tanggal || "-";
+
+                    const rawStatus = (data.order_status || "PENDING").toString().trim().toUpperCase();
+                    document.getElementById('dispStatus').innerText = rawStatus;
+
+                    // Buat payload untuk dioper ke halaman status
+                    const queryParams = new URLSearchParams({
+                        order_id: data.order_id,
+                        amount: data.nominal,
+                        method: data.metode,
+                        owner: data.nama_pemilik,
+                        rek: data.nomor_rekening,
+                        date: data.tanggal
+                    }).toString();
+
+                    if (rawStatus === "YA" || rawStatus === "YES" || rawStatus === "SUCCESS") {
+                        window.location.href = `success.html?${queryParams}`;
+                    } else if (rawStatus === "NO" || rawStatus === "REJECT" || rawStatus === "DITOLAK") {
+                        window.location.href = `reject.html?${queryParams}`;
+                    }
+                }
+            } catch (e) {
+                console.warn("Koneksi gagal sinkronisasi:", e);
+            }
+        }
+
+        function syncNow() {
+            const icon = document.getElementById('syncIcon');
+            icon.classList.add('fa-spin');
+            verifyStatus().finally(() => {
+                setTimeout(() => icon.classList.remove('fa-spin'), 600);
+            });
+        }
+
+        // Pengecekan otomatis berkala
+        verifyStatus();
+        const autoSync = setInterval(verifyStatus, 3000);
+    </script>
+</body>
+</html>

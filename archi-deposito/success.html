@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi Berhasil - BISTORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-canvas: #f1f5f9;
+            --surface: #ffffff;
+            --brand-dark: #09121f;
+            --accent-green: #00aa5b;
+            --green-soft: #e8f8f0;
+            --slate-400: #94a3b8;
+            --slate-600: #475569;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 14px;
+        }
+
+        .phone-frame {
+            width: 100%;
+            max-width: 412px;
+            background: var(--surface);
+            border-radius: 36px;
+            box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .receipt-card {
+            margin: 20px 20px 10px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            position: relative;
+            box-shadow: 0 8px 24px -6px rgba(0,0,0,0.04);
+        }
+
+        /* Lekukan Tiket Kanan & Kiri */
+        .ticket-cutout-left, .ticket-cutout-right {
+            position: absolute;
+            top: 170px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--surface);
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            z-index: 5;
+        }
+        .ticket-cutout-left { left: -11px; }
+        .ticket-cutout-right { right: -11px; }
+
+        .receipt-top {
+            padding: 26px 20px 20px;
+            text-align: center;
+        }
+
+        .badge-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--green-soft);
+            color: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 14px;
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .receipt-top h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--brand-dark);
+        }
+
+        .receipt-top p {
+            font-size: 11.5px;
+            color: var(--slate-600);
+            margin-top: 4px;
+        }
+
+        .receipt-amount-box {
+            margin-top: 14px;
+        }
+
+        .receipt-amount-box h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--brand-dark);
+        }
+
+        .dashed-separator {
+            border-top: 2px dashed #cbd5e1;
+            margin: 0 10px;
+        }
+
+        .receipt-details {
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .item-row .key {
+            color: var(--slate-600);
+            font-weight: 500;
+        }
+
+        .item-row .val {
+            color: var(--brand-dark);
+            font-weight: 700;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .actions-footer {
+            padding: 10px 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        .btn-print {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            color: var(--brand-dark);
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .phone-frame { border: none; box-shadow: none; max-width: 100%; }
+            .actions-footer { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="receipt-card">
+            <div class="ticket-cutout-left"></div>
+            <div class="ticket-cutout-right"></div>
+
+            <div class="receipt-top">
+                <div class="badge-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3>Pembayaran Berhasil!</h3>
+                <p>Transaksi telah disetujui & berhasil diproses</p>
+                
+                <div class="receipt-amount-box">
+                    <h1 id="resAmount">Rp 0</h1>
+                </div>
+            </div>
+
+            <div class="dashed-separator"></div>
+
+            <div class="receipt-details">
+                <div class="item-row">
+                    <span class="key">Status Tagihan</span>
+                    <span class="val" style="color: var(--accent-green);"><i class="fa-solid fa-circle-check"></i> Sukses</span>
+                </div>
+                <div class="item-row">
+                    <span class="key">ID Transaksi</span>
+                    <span class="val" id="resOrderId" style="font-family: monospace;">-</span>
+                </div>
+                <div class="item-row">
+                    <span class="key">Metode Pembayaran</span>
+                    <span class="val" id="resMethod">-</span>
+                </div>
+                <div class="item-row">
+                    <span class="key">Penerima Dana</span>
+                    <span class="val" id="resOwner">-</span>
+                </div>
+                <div class="item-row">
+                    <span class="key">Tujuan Rekening</span>
+                    <span class="val" id="resRek">-</span>
+                </div>
+                <div class="item-row">
+                    <span class="key">Waktu Selesai</span>
+                    <span class="val" id="resDate">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions-footer">
+            <button class="btn-action btn-print" onclick="window.print()">
+                <i class="fa-solid fa-download"></i> Simpan Struk
+            </button>
+            <button class="btn-action btn-primary" onclick="window.location.href='index.html'">
+                Selesai & Kembali
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const p = new URLSearchParams(window.location.search);
+        document.getElementById('resOrderId').innerText = p.get('order_id') || "-";
+        document.getElementById('resAmount').innerText = p.get('amount') ? "Rp " + Number(p.get('amount')).toLocaleString('id-ID') : "Rp 0";
+        document.getElementById('resMethod').innerText = p.get('method') || "TRANSFER";
+        document.getElementById('resOwner').innerText = p.get('owner') || "-";
+        document.getElementById('resRek').innerText = p.get('rek') || "-";
+        document.getElementById('resDate').innerText = p.get('date') || new Date().toLocaleString('id-ID');
+    </script>
+</body>
+</html>

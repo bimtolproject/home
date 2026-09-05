@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Hub - GitHub & Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-dark: #090e17;
+            --brand-surface: #ffffff;
+            --bg-canvas: #f8fafc;
+            --accent-green: #00aa5b;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --slate-500: #64748b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-canvas); display: flex; justify-content: center; min-height: 100vh; color: var(--brand-dark); }
+        .admin-container { width: 100%; max-width: 480px; background: var(--brand-surface); min-height: 100vh; display: flex; flex-direction: column; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+
+        .admin-header { padding: 20px; background: var(--brand-dark); color: white; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+        .admin-title h2 { font-size: 16px; font-weight: 800; }
+        .admin-title p { font-size: 11px; color: #94a3b8; }
+        .btn-icon { background: rgba(255,255,255,0.12); color: white; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        /* GITHUB STATUS CARD */
+        .gh-card { background: linear-gradient(135deg, #111927, #1e293b); color: white; margin: 16px 20px 0; padding: 18px 20px; border-radius: 20px; }
+        .gh-badge { font-size: 10px; background: rgba(0, 229, 153, 0.2); color: #00e599; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+        .gh-balance-val { font-size: 26px; font-weight: 800; color: #00e599; margin: 8px 0 14px; }
+        .gh-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .btn-gh { background: rgba(255,255,255,0.12); color: white; border: none; padding: 10px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+        /* TABS */
+        .tab-bar { display: flex; padding: 14px 20px 8px; gap: 8px; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .tab-item { padding: 7px 14px; border-radius: 20px; font-size: 11.5px; font-weight: 700; background: #f1f5f9; color: var(--slate-500); cursor: pointer; border: none; white-space: nowrap; }
+        .tab-item.active { background: var(--brand-dark); color: white; }
+
+        /* ORDERS */
+        .orders-container { padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+        .order-card { background: #fff; border: 1.5px solid var(--border); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .order-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px; font-size: 11.5px; }
+        .order-badge { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; }
+        .badge-pending { background: #fef3c7; color: #b45309; }
+        .badge-ya { background: #e8f8f0; color: #00aa5b; }
+        .badge-reject { background: #fee2e2; color: #ef4444; }
+        .order-body { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; }
+        .order-actions { display: flex; gap: 6px; margin-top: 4px; }
+        .btn-act { flex: 1; padding: 9px 6px; border-radius: 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-approve { background: var(--accent-green); color: white; }
+        .btn-reject { background: #fee2e2; color: var(--accent-red); }
+        .btn-proof { background: #f1f5f9; color: var(--brand-dark); border: 1px solid var(--border); }
+
+        /* MODAL */
+        .modal { position: fixed; inset: 0; background: rgba(9, 14, 23, 0.7); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: flex-end; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content { background: white; width: 100%; max-width: 480px; border-radius: 26px 26px 0 0; padding: 22px 20px 34px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); max-height: 85vh; overflow-y: auto; }
+        .modal.active .modal-content { transform: translateY(0); }
+        .modal-handle { width: 40px; height: 4px; background: #cbd5e1; border-radius: 10px; margin: 0 auto 16px; }
+        .form-label { font-size: 11px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; margin-bottom: 6px; display: block; }
+        .form-control { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 13px; margin-bottom: 12px; outline: none; }
+        .btn-submit { width: 100%; background: var(--brand-dark); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+        .btn-submit:disabled { background: #94a3b8; }
+        .upload-field { border: 2px dashed #cbd5e1; border-radius: 14px; padding: 18px; text-align: center; cursor: pointer; background: #f8fafc; margin-bottom: 12px; }
+        .upload-preview { max-height: 120px; display: none; border-radius: 8px; margin-top: 8px; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <!-- HEADER -->
+        <div class="admin-header">
+            <div class="admin-title">
+                <h2>Admin Hub & GitHub Sync</h2>
+                <p>BISTORE</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-icon" title="Pengaturan Token" onclick="openTokenModal()"><i class="fa-solid fa-key"></i></button>
+                <button class="btn-icon" title="Refresh" onclick="initDashboard()"><i class="fa-solid fa-rotate-right" id="reloadIcon"></i></button>
+            </div>
+        </div>
+
+        <!-- WIDGET SALDO HASNA.JS GITHUB -->
+        <div class="gh-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; color: #94a3b8; font-weight: 600;">SALDO HASNA.JS (REPO GITHUB)</span>
+                <span class="gh-badge"><i class="fa-brands fa-github"></i> REPO SYNC</span>
+            </div>
+            <div class="gh-balance-val" id="dispGhBalance">Rp 0</div>
+            <div class="gh-actions">
+                <button class="btn-gh" onclick="openBalanceModal()"><i class="fa-solid fa-pen-to-square"></i> Edit Saldo Repo</button>
+                <button class="btn-gh" onclick="openMutationModal()"><i class="fa-solid fa-plus-circle"></i> Tambah Mutasi</button>
+            </div>
+        </div>
+
+        <!-- FILTER TAB PESANAN SPREADSHEET -->
+        <div class="tab-bar">
+            <button class="tab-item active" onclick="filterTab('ALL', this)">Semua Pesanan</button>
+            <button class="tab-item" onclick="filterTab('PENDING', this)">Pending</button>
+            <button class="tab-item" onclick="filterTab('YA', this)">Disetujui</button>
+            <button class="tab-item" onclick="filterTab('REJECT', this)">Ditolak</button>
+        </div>
+
+        <!-- LIST TRANSAKSI SPREADSHEET -->
+        <div class="orders-container" id="orderList">
+            <div style="text-align: center; padding: 40px; font-size: 13px; color: var(--slate-500);">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 20px; margin-bottom: 8px; display: block;"></i>
+                Memuat antrean transaksi...
+            </div>
+        </div>
+
+        <!-- MODAL 1: SETTING TOKEN GITHUB -->
+        <div class="modal" id="tokenModal" onclick="if(event.target===this) closeModals()">
+            <div class="modal-content">
+                <div class="modal-handle"></div>
+                <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Konfigurasi Token GitHub</h3>
+                <p style="font-size: 11.5px; color: var(--slate-500); margin-bottom: 12px;">Token disimpan aman di penyimpanan browser lokal admin ini.</p>
+                <label class="form-label">GitHub Personal Access Token (Classic):</label>
+                <input type="password" id="inputGhToken" class="form-control" placeholder="ghp_xxxxxxxxxxxxxx">
+                <button type="button" class="btn-submit" onclick="saveGhToken()">Simpan Token</button>
+            </div>
+        </div>
+
+        <!-- MODAL 2: UBAH SALDO GITHUB -->
+        <div class="modal" id="balanceModal" onclick="if(event.target===this) closeModals()">
+            <div class="modal-content">
+                <div class="modal-handle"></div>
+                <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Ubah Saldo di hasna.js</h3>
+                <p style="font-size: 11.5px; color: var(--slate-500); margin-bottom: 14px;">Mengubah nominal saldo langsung di repo GitHub Anda.</p>
+                <form onsubmit="handleUpdateBalance(event)">
+                    <label class="form-label">Nominal Saldo Baru (Rp)</label>
+                    <input type="number" id="inputNewBalance" class="form-control" required>
+                    <button type="submit" id="btnSaveBalance" class="btn-submit">Commit ke GitHub</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL 3: TAMBAH MUTASI KE GITHUB -->
+        <div class="modal" id="mutationModal" onclick="if(event.target===this) closeModals()">
+            <div class="modal-content">
+                <div class="modal-handle"></div>
+                <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Tambah Riwayat ke hasna.js</h3>
+                <p style="font-size: 11.5px; color: var(--slate-500); margin-bottom: 14px;">Menambahkan objek mutasi baru ke file hasna.js di repo GitHub.</p>
+                <form onsubmit="handleAddMutation(event)">
+                    <label class="form-label">Tipe Transaksi</label>
+                    <select id="inputMutType" class="form-control">
+                        <option value="in">Uang Masuk (+ in)</option>
+                        <option value="out">Uang Keluar (- out)</option>
+                    </select>
+                    <label class="form-label">Judul Mutasi</label>
+                    <input type="text" id="inputMutTitle" class="form-control" placeholder="Contoh: Deposito Tambahan" required>
+                    <label class="form-label">Nominal (Rp)</label>
+                    <input type="number" id="inputMutAmount" class="form-control" placeholder="Contoh: 50000" min="1000" required>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+                        <input type="checkbox" id="checkSyncBalance" checked style="width: 16px; height: 16px;">
+                        <label for="checkSyncBalance" style="font-size: 12px; font-weight: 600;">Sesuaikan nominal balance hasna.js otomatis</label>
+                    </div>
+                    <button type="submit" id="btnSaveMutation" class="btn-submit">Commit Mutasi Baru</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL 4: KIRIM BUKTI STRUK -->
+        <div class="modal" id="proofModal" onclick="if(event.target===this) closeModals()">
+            <div class="modal-content">
+                <div class="modal-handle"></div>
+                <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 6px;">Kirim Resi ke Telegram</h3>
+                <div class="upload-field" onclick="document.getElementById('proofFileInput').click()">
+                    <i class="fa-solid fa-image" style="font-size: 24px; color: #64748b; margin-bottom: 6px;"></i>
+                    <div style="font-size: 12px; font-weight: 600;">Sentuh untuk pilih foto bukti transfer</div>
+                    <input type="file" id="proofFileInput" accept="image/*" style="display: none;" onchange="previewProofImage(event)">
+                    <img id="proofPreviewImg" class="upload-preview" alt="Bukti">
+                </div>
+                <input type="text" id="proofNote" class="form-control" placeholder="Catatan admin opsional">
+                <button type="button" id="btnSendProof" class="btn-submit" onclick="submitSendProof()">Kirim Foto ke Telegram</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= KONFIGURASI =================
+        const GH_USERNAME = "bimtolproject";
+        const GH_REPO = "home";
+        const GH_FILE_PATH = "archi-deposito/hasna.js";
+
+        const TG_BOT_TOKEN = "6225268550:AAHkeX_stdehJw8MGsYStPKwxvsGKAM3oeM";
+        const TG_CHAT_ID = "5091005312";
+        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxa91izAi7WFQhQbt1O_D-CF5jpJPIGXZKMC8bCG-RMmwY5n0PjxrfML0Hh9rYb5yp1/exec";
+
+        let ghToken = localStorage.getItem('admin_gh_token') || "";
+        let currentHasnaObj = null;
+        let currentFileSha = "";
+        let allOrders = [];
+        let currentFilter = 'ALL';
+        let activeOrderForProof = null;
+        let selectedProofFile = null;
+
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+        function openTokenModal() { document.getElementById('inputGhToken').value = ghToken; document.getElementById('tokenModal').classList.add('active'); }
+        function saveGhToken() {
+            ghToken = document.getElementById('inputGhToken').value.trim();
+            localStorage.setItem('admin_gh_token', ghToken);
+            closeModals();
+            alert("Token GitHub disimpan!");
+            fetchHasnaFromGithub();
+        }
+
+        // AMBIL DATA HASNA.JS VIA GITHUB REST API DENGAN DECODER UTF-8 AMAN
+        async function fetchHasnaFromGithub() {
+            if (!ghToken) {
+                openTokenModal();
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GH_USERNAME}/${GH_REPO}/contents/${GH_FILE_PATH}`, {
+                    headers: {
+                        "Authorization": `Bearer ${ghToken}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                });
+
+                if (!res.ok) {
+                    if (res.status === 401) {
+                        alert("Token GitHub tidak valid atau kadaluarsa. Silakan periksa kembali.");
+                        openTokenModal();
+                        return;
+                    }
+                    if (res.status === 404) {
+                        alert(`File tidak ditemukan di path: ${GH_FILE_PATH}. Periksa username dan repo.`);
+                        return;
+                    }
+                    throw new Error(`GitHub API Error: ${res.status}`);
+                }
+
+                const data = await res.json();
+                if (data.content) {
+                    currentFileSha = data.sha;
+
+                    // Decode Base64 dengan TextDecoder agar karakter UTF-8 terbaca utuh
+                    const binaryString = atob(data.content.replace(/\s/g, ''));
+                    const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
+                    const rawJs = new TextDecoder('utf-8').decode(bytes);
+
+                    // Evaluasi Objek hasnaData
+                    let parsedObj = null;
+                    try {
+                        const getObj = new Function(rawJs + "; return (typeof hasnaData !== 'undefined') ? hasnaData : null;");
+                        parsedObj = getObj();
+                    } catch (errEval) {
+                        const jsonPart = rawJs.substring(rawJs.indexOf('{'), rawJs.lastIndexOf('}') + 1);
+                        parsedObj = JSON.parse(jsonPart);
+                    }
+
+                    if (!parsedObj) throw new Error("Format objek hasnaData tidak valid");
+                    currentHasnaObj = parsedObj;
+
+                    // Ekstraksi Saldo: Mendukung kantongUtama atau kantong[0]
+                    let balance = 0;
+                    if (currentHasnaObj.kantongUtama && typeof currentHasnaObj.kantongUtama.balance !== 'undefined') {
+                        balance = currentHasnaObj.kantongUtama.balance;
+                    } else if (Array.isArray(currentHasnaObj.kantong) && currentHasnaObj.kantong.length > 0) {
+                        balance = currentHasnaObj.kantong[0].balance;
+                    }
+
+                    document.getElementById('dispGhBalance').innerText = "Rp " + Number(balance || 0).toLocaleString('id-ID');
+                }
+            } catch (err) {
+                console.error("Gagal membaca hasna.js dari GitHub:", err);
+                document.getElementById('dispGhBalance').innerText = "Gagal Memuat";
+            }
+        }
+
+        // COMMIT HASNA.JS KE GITHUB
+        async function commitHasnaToGithub(updatedObj, commitMessage) {
+            if (!ghToken) {
+                openTokenModal();
+                throw new Error("Token GitHub belum diatur.");
+            }
+
+            const updatedJsContent = `const hasnaData = ${JSON.stringify(updatedObj, null, 4)};\n`;
+            const encodedContent = btoa(unescape(encodeURIComponent(updatedJsContent)));
+
+            const res = await fetch(`https://api.github.com/repos/${GH_USERNAME}/${GH_REPO}/contents/${GH_FILE_PATH}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${ghToken}`,
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: commitMessage,
+                    content: encodedContent,
+                    sha: currentFileSha
+                })
+            });
+
+            const result = await res.json();
+            if (result.content && result.content.sha) {
+                currentFileSha = result.content.sha;
+                currentHasnaObj = updatedObj;
+                return true;
+            } else {
+                throw new Error(result.message || "Gagal commit ke GitHub");
+            }
+        }
+
+        // EDIT SALDO
+        function openBalanceModal() {
+            if (!currentHasnaObj) {
+                if(!ghToken) return openTokenModal();
+                return alert("Sedang memuat data dari GitHub, tunggu sejenak.");
+            }
+            let bal = 0;
+            if (currentHasnaObj.kantongUtama) bal = currentHasnaObj.kantongUtama.balance;
+            else if (Array.isArray(currentHasnaObj.kantong) && currentHasnaObj.kantong.length > 0) bal = currentHasnaObj.kantong[0].balance;
+
+            document.getElementById('inputNewBalance').value = bal;
+            document.getElementById('balanceModal').classList.add('active');
+        }
+
+        async function handleUpdateBalance(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveBalance');
+            const newBal = Number(document.getElementById('inputNewBalance').value);
+
+            btn.disabled = true;
+            btn.innerText = "Mengirim Commit...";
+
+            try {
+                if (currentHasnaObj.kantongUtama) currentHasnaObj.kantongUtama.balance = newBal;
+                if (Array.isArray(currentHasnaObj.kantong) && currentHasnaObj.kantong.length > 0) currentHasnaObj.kantong[0].balance = newBal;
+                currentHasnaObj.version = parseFloat(((currentHasnaObj.version || 8.0) + 0.01).toFixed(2));
+
+                await commitHasnaToGithub(currentHasnaObj, `Update Saldo: Rp ${newBal.toLocaleString('id-ID')}`);
+                document.getElementById('dispGhBalance').innerText = "Rp " + newBal.toLocaleString('id-ID');
+                closeModals();
+                alert("Saldo hasna.js di GitHub sukses diperbarui!");
+            } catch (err) {
+                alert("Gagal: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Commit ke GitHub";
+            }
+        }
+
+        // TAMBAH MUTASI
+        function openMutationModal() {
+            if(!ghToken) return openTokenModal();
+            document.getElementById('inputMutTitle').value = "";
+            document.getElementById('inputMutAmount').value = "";
+            document.getElementById('mutationModal').classList.add('active');
+        }
+
+        async function handleAddMutation(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveMutation');
+            const type = document.getElementById('inputMutType').value;
+            const title = document.getElementById('inputMutTitle').value.trim();
+            const amount = Number(document.getElementById('inputMutAmount').value);
+            const syncBal = document.getElementById('checkSyncBalance').checked;
+
+            btn.disabled = true;
+            btn.innerText = "Menyimpan Mutasi...";
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + " - " + String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+
+            try {
+                if (!Array.isArray(currentHasnaObj.riwayat)) currentHasnaObj.riwayat = [];
+                currentHasnaObj.riwayat.unshift({
+                    id: "t_" + Date.now().toString(36),
+                    title: title,
+                    pocket: "Rekening Utama",
+                    type: type,
+                    amount: amount,
+                    date: dateStr,
+                    icon: type === 'in' ? 'fa-plus' : 'fa-arrow-up'
+                });
+
+                if (syncBal) {
+                    const adj = type === 'in' ? amount : -amount;
+                    if (currentHasnaObj.kantongUtama) currentHasnaObj.kantongUtama.balance += adj;
+                    if (Array.isArray(currentHasnaObj.kantong) && currentHasnaObj.kantong.length > 0) currentHasnaObj.kantong[0].balance += adj;
+                }
+                currentHasnaObj.version = parseFloat(((currentHasnaObj.version || 8.0) + 0.01).toFixed(2));
+
+                await commitHasnaToGithub(currentHasnaObj, `Tambah Mutasi: ${title} (${type === 'in' ? '+' : '-'}${amount})`);
+                
+                let updatedBalance = currentHasnaObj.kantongUtama ? currentHasnaObj.kantongUtama.balance : (currentHasnaObj.kantong ? currentHasnaObj.kantong[0].balance : 0);
+                document.getElementById('dispGhBalance').innerText = "Rp " + Number(updatedBalance).toLocaleString('id-ID');
+                
+                closeModals();
+                alert("Mutasi baru sukses dicatat ke hasna.js di GitHub!");
+            } catch (err) {
+                alert("Gagal: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Commit Mutasi Baru";
+            }
+        }
+
+        // SPREADSHEET ORDERS
+        async function loadSpreadsheetOrders() {
+            try {
+                const res = await fetch(`${SPREADSHEET_WEBAPP_URL}?action=get_all_orders`);
+                const result = await res.json();
+                if (result.status === "success") {
+                    allOrders = result.data || [];
+                    renderOrders();
+                }
+            } catch (err) {
+                console.error("Gagal memuat spreadsheet:", err);
+            }
+        }
+
+        function filterTab(status, btn) {
+            currentFilter = status;
+            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orderList');
+            container.innerHTML = '';
+
+            const filtered = allOrders.filter(o => {
+                const st = String(o.order_status).trim().toUpperCase();
+                if (currentFilter === 'ALL') return true;
+                if (currentFilter === 'YA') return (st === 'YA' || st === 'YES');
+                if (currentFilter === 'REJECT') return (st === 'REJECT' || st === 'NO');
+                if (currentFilter === 'PENDING') return (st === 'PENDING' || st === '');
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; font-size:12px; color:#94a3b8;">Tidak ada data di tab ini.</div>';
+                return;
+            }
+
+            filtered.forEach(o => {
+                const st = String(o.order_status).trim().toUpperCase();
+                let badgeClass = (st === 'YA' || st === 'YES') ? 'badge-ya' : ((st === 'REJECT' || st === 'NO') ? 'badge-reject' : 'badge-pending');
+
+                container.innerHTML += `
+                    <div class="order-card">
+                        <div class="order-head">
+                            <span style="font-family:monospace; font-weight:700;">${o.order_id}</span>
+                            <span class="order-badge ${badgeClass}">${o.order_status || 'PENDING'}</span>
+                        </div>
+                        <div class="order-body">
+                            <div><span style="color:#64748b; font-size:10px;">PENERIMA/PENGIRIM</span><b>${o.nama_pemilik}</b></div>
+                            <div><span style="color:#64748b; font-size:10px;">NOMINAL</span><b style="color:var(--accent-green)">Rp ${Number(o.nominal).toLocaleString('id-ID')}</b></div>
+                            <div><span style="color:#64748b; font-size:10px;">METODE / REK</span><b>${o.metode} (${o.nomor_rekening})</b></div>
+                            <div><span style="color:#64748b; font-size:10px;">WAKTU</span><b style="font-size:11px;">${o.tanggal}</b></div>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn-act btn-approve" onclick="updateOrderStatus('${o.order_id}', 'Ya')"><i class="fa-solid fa-check"></i> Setujui</button>
+                            <button class="btn-act btn-reject" onclick="updateOrderStatus('${o.order_id}', 'Reject')"><i class="fa-solid fa-xmark"></i> Tolak</button>
+                            <button class="btn-act btn-proof" onclick="openProofModal('${o.order_id}')"><i class="fa-solid fa-receipt"></i> Bukti</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            if (!confirm(`Ubah status ${orderId} menjadi "${newStatus}"?`)) return;
+            const target = allOrders.find(x => x.order_id === orderId);
+            if (target) target.order_status = newStatus;
+            renderOrders();
+
+            fetch(SPREADSHEET_WEBAPP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: "update_status", order_id: orderId, new_status: newStatus })
+            });
+
+            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: `🔔 *STATUS PEMBAYARAN*\n🆔 Order ID: \`${orderId}\`\n📌 Status: *${newStatus.toUpperCase()}*`, parse_mode: 'Markdown' })
+            });
+        }
+
+        // BUKTI TELEGRAM
+        function openProofModal(orderId) {
+            activeOrderForProof = allOrders.find(o => o.order_id === orderId);
+            if(!activeOrderForProof) return;
+            selectedProofFile = null;
+            document.getElementById('proofFileInput').value = "";
+            document.getElementById('proofPreviewImg').style.display = "none";
+            document.getElementById('proofNote').value = "";
+            document.getElementById('proofModal').classList.add('active');
+        }
+
+        function previewProofImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                selectedProofFile = file;
+                const preview = document.getElementById('proofPreviewImg');
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = "inline-block";
+            }
+        }
+
+        async function submitSendProof() {
+            if (!selectedProofFile) return alert("Pilih foto bukti resi terlebih dahulu.");
+            const btn = document.getElementById('btnSendProof');
+            btn.disabled = true;
+            btn.innerText = "Mengirim...";
+
+            const o = activeOrderForProof;
+            const note = document.getElementById('proofNote').value.trim() || "Transaksi berhasil diproses.";
+
+            const fd = new FormData();
+            fd.append('chat_id', TG_CHAT_ID);
+            fd.append('caption', `🧾 *RINCIAN PEMBAYARAN*\n🆔 \`${o.order_id}\`\n👤 Nama: ${o.nama_pemilik}\n💰 Rp ${Number(o.nominal).toLocaleString('id-ID')}\n📌 ${note}`);
+            fd.append('photo', selectedProofFile);
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                alert("Foto bukti berhasil terkirim ke Telegram!");
+                closeModals();
+                updateOrderStatus(o.order_id, 'Ya');
+            } catch (err) {
+                alert("Gagal kirim bukti.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Kirim Foto ke Telegram";
+            }
+        }
+
+        function initDashboard() {
+            const icon = document.getElementById('reloadIcon');
+            icon.classList.add('fa-spin');
+            fetchHasnaFromGithub();
+            loadSpreadsheetOrders().finally(() => {
+                setTimeout(() => icon.classList.remove('fa-spin'), 600);
+            });
+        }
+
+        window.onload = () => {
+            if(!ghToken) openTokenModal();
+            initDashboard();
+        };
+    </script>
+</body>
+</html>
