@@ -2,7 +2,7 @@ const hasnaData = {
     "version": 1.03,
     "user": {
         "name": "Arch",
-        "accountType": "Black Diamond Tier",
+        "accountType": "Jomok Tingkat Junior",
         "accountNumber": "2500 0012 772"
     },
     "kantongUtama": {
@@ -12,15 +12,6 @@ const hasnaData = {
         "currency": "IDR"
     },
     "riwayat": [
-        {
-            "id": "t_mto4ehk7",
-            "title": "Deposito via QRIS",
-            "pocket": "Rekening Utama",
-            "type": "in",
-            "amount": 1000,
-            "date": "05 Sep 2026 - 15:28",
-            "icon": "fa-plus"
-        },
         {
             "id": "t71",
             "title": "Biaya Transfer + Admin",
