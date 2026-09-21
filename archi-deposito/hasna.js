@@ -1,5 +1,5 @@
 const hasnaData = {
-    "version": 1.15,
+    "version": 1.16,
     "user": {
         "name": "Arch",
         "accountType": "Jomok Tingkat Junior",
@@ -8,10 +8,19 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 51070,
+        "balance": 30970,
         "currency": "IDR"
     },
     "riwayat": [
+        {
+            "id": "t_muaj0thc",
+            "title": "QRIS ke 085716551817",
+            "pocket": "Rekening Utama",
+            "type": "out",
+            "amount": 20100,
+            "date": "21 Sep 2026 - 07:48",
+            "icon": "fa-arrow-up"
+        },
         {
             "id": "t_mu9rmirr",
             "title": "QRIS Ke PT TOKOPEDIA",
