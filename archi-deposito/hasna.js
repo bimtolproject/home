@@ -8,10 +8,28 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 18927,
+        "balance": 15865,
         "currency": "IDR"
     },
     "riwayat": [
+        {
+            "id": "t_quo28iss",
+            "title": "Biaya Layanan Bln Oktober",
+            "pocket": "Rekening Utama",
+            "type": "out",
+            "amount": 3100,
+            "date": "01 Okt 2026 - 00:00",
+            "icon": "fa-arrow-up"
+        },
+        {
+            "id": "t_mpo21ius",
+            "title": "Bunga Bln Oktober",
+            "pocket": "Rekening Utama",
+            "type": "in",
+            "amount": 38,
+            "date": "01 Okt 2026 - 00:00",
+            "icon": "fa-plus"
+        },
         {
             "id": "t_muo98ius",
             "title": "Deposito via QRIS",
