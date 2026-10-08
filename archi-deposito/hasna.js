@@ -1,5 +1,5 @@
 const hasnaData = {
-    "version": 1.2,
+    "version": 1.21,
     "user": {
         "name": "Arch",
         "accountType": "Jomok Tingkat Junior",
@@ -8,10 +8,19 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 15865,
+        "balance": 32865,
         "currency": "IDR"
     },
     "riwayat": [
+        {
+            "id": "t_muytf4bh",
+            "title": "Deposito via QRIS",
+            "pocket": "Rekening Utama",
+            "type": "in",
+            "amount": 17000,
+            "date": "08 Okt 2026 - 07:45",
+            "icon": "fa-plus"
+        },
         {
             "id": "t_quo28iss",
             "title": "Biaya Layanan Bln Oktober",
