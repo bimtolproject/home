@@ -1,5 +1,5 @@
 const hasnaData = {
-    "version": 1.22,
+    "version": 1.23,
     "user": {
         "name": "Arch",
         "accountType": "Jomok Tingkat Junior",
@@ -8,7 +8,7 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 17865,
+        "balance": 17765,
         "currency": "IDR"
     },
     "riwayat": [
