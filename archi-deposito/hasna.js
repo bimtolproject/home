@@ -8,7 +8,7 @@ const hasnaData = {
     "kantongUtama": {
         "id": "k_utama",
         "name": "Rekening Utama",
-        "balance": 90330,
+        "balance": 0,
         "currency": "IDR"
     },
     "riwayat": [
@@ -16,10 +16,10 @@ const hasnaData = {
             "id": "t_mvdcfxti",
             "title": "Transfer Dana",
             "pocket": "Rekening Utama",
-            "type": "in",
+            "type": "out",
             "amount": 44165,
             "date": "18 Okt 2026 - 11:47",
-            "icon": "fa-plus"
+            "icon": "fa-arrow-up"
         },
         {
             "id": "t_mvdcbrc6",
